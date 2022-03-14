@@ -1,9 +1,10 @@
 import * as path from 'path';
 import { window } from 'vscode';
 const { readdir, readFile } = require('fs').promises;
+import { getLineBreak } from './lineBreak';
 
 export const multilineImportsGroupRegex = /import \(([^)]+)\)/;
-export const moduleRegex = /module (.*?)\n/;
+export const moduleRegex = new RegExp('module (.*?)' + getLineBreak());
 
 const fileInGOPATH = (gopath: string | undefined) => {
   if (!gopath) {
@@ -80,7 +81,7 @@ export const getImports = (documentText: string): string[] => {
     return [];
   }
 
-  return importsMatch[1].split('\n').filter((line) => line.trim() != '');
+  return importsMatch[1].split(getLineBreak()).filter((line) => line.trim() != '');
 };
 
 export type ImportsRange = {
@@ -90,7 +91,7 @@ export type ImportsRange = {
 
 export const getImportsRange = (documentText: string): ImportsRange => {
   let start = 1; // lines in vs code are numereted from 1
-  for (var line of documentText.split('\n')) {
+  for (var line of documentText.split(getLineBreak())) {
     if (line.includes('import (')) {
       break;
     }
@@ -98,7 +99,7 @@ export const getImportsRange = (documentText: string): ImportsRange => {
   }
 
   let end = start;
-  for (var line of documentText.split('\n').slice(start)) {
+  for (var line of documentText.split(getLineBreak()).slice(start)) {
     if (line.includes(')')) {
       break;
     }

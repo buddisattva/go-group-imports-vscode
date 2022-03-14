@@ -1,5 +1,6 @@
 import { Range, window, workspace, WorkspaceEdit, Position } from 'vscode';
 import { resolveRootPackage, getImportsRange, getImports } from './utils';
+import { getLineBreak } from './lineBreak';
 
 export const goGroupImports = async () => {
   const {
@@ -75,5 +76,5 @@ export const group = (imports: string[], rootPkg: string): ImportGroups => {
 const importGroupsToString = (importGroups: ImportGroups): string =>
   Object.keys(importGroups)
     .filter((key) => importGroups[key].length)
-    .map((key) => importGroups[key].join('\n'))
-    .join('\n\n');
+    .map((key) => importGroups[key].join(getLineBreak()))
+    .join(getLineBreak() + getLineBreak());
